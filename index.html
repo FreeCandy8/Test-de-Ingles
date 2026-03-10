@@ -1,249 +1,759 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>English Proficiency Tests</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0f0f13; font-family: Georgia, serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-  
-  .screen { max-width: 620px; width: 100%; }
-  
-  /* HOME */
-  .home-title { color: #fff; font-size: 2rem; font-weight: 900; text-align: center; margin-bottom: 8px; }
-  .home-sub { color: #888; text-align: center; margin-bottom: 36px; font-size: 0.95rem; }
-  .test-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .test-card { background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 18px; padding: 24px 20px; cursor: pointer; text-align: left; transition: all 0.2s; }
-  .test-card:hover { transform: translateY(-3px); }
-  .test-card .emoji { font-size: 2rem; display: block; margin-bottom: 10px; }
-  .test-card h3 { color: #fff; font-size: 1rem; margin-bottom: 4px; }
-  .test-card p { color: #666; font-size: 0.82rem; }
-  .test-card .score-badge { display: inline-block; border-radius: 99px; padding: 2px 10px; font-size: 0.78rem; font-weight: 700; margin-top: 8px; }
+  :root {
+    --gold: #f5c842;
+    --dark: #0f0f0f;
+    --card: #1a1a1a;
+    --border: #2e2e2e;
+    --text: #e8e8e0;
+    --muted: #888;
+    --green: #4caf82;
+    --red: #e05a5a;
+    --accent: #f5c842;
+  }
 
-  /* TEST */
-  .test-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .back-btn { background: transparent; color: #888; border: 1px solid #333; border-radius: 8px; padding: 6px 14px; cursor: pointer; font-size: 0.88rem; }
-  .test-name { color: #fff; font-weight: 700; font-size: 0.95rem; }
-  .q-counter { color: #888; font-size: 0.88rem; }
-  .progress-bar { background: #222; border-radius: 99px; height: 5px; margin-bottom: 28px; }
-  .progress-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
-  .question-box { background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 18px; padding: 28px; margin-bottom: 16px; }
-  .question-box p { color: #fff; font-size: 1.05rem; line-height: 1.6; }
-  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-  .option-btn { background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 12px; padding: 14px 18px; color: #ccc; text-align: left; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s; font-family: Georgia, serif; }
-  .option-btn .letter { background: #2a2a3a; color: #fff; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 700; flex-shrink: 0; }
-  .option-btn.selected { border-width: 2px; color: #fff; }
-  .option-btn.correct { background: #14532d; border: 2px solid #22c55e; color: #fff; }
-  .option-btn.wrong { background: #450a0a; border: 2px solid #ef4444; color: #fff; }
-  .explanation { border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; font-size: 0.92rem; line-height: 1.6; color: #e5e7eb; }
-  .action-btn { width: 100%; border: none; border-radius: 12px; padding: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: Georgia, serif; transition: all 0.2s; }
-  .action-btn:disabled { background: #2a2a3a; color: #555; cursor: not-allowed; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  /* RESULT */
-  .result-box { background: #1a1a24; border-radius: 24px; padding: 44px 36px; text-align: center; border-width: 2px; border-style: solid; }
-  .result-emoji { font-size: 60px; margin-bottom: 12px; }
-  .result-title { color: #fff; font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; }
-  .result-score { font-size: 4rem; font-weight: 900; margin-bottom: 8px; }
-  .result-grade { font-size: 1.3rem; font-weight: 700; margin-bottom: 32px; }
-  .result-btns { display: flex; gap: 12px; justify-content: center; }
-  .result-btn { border: none; border-radius: 12px; padding: 12px 24px; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: Georgia, serif; }
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 32px 24px;
+    text-align: center;
+  }
+
+  .header-tag {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--dark);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: #fff;
+  }
+
+  .header h1 span { color: var(--gold); }
+
+  .header p {
+    color: var(--muted);
+    font-size: 15px;
+    margin-top: 10px;
+    font-weight: 300;
+  }
+
+  /* TEST SELECTOR */
+  .selector {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+
+  .selector h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .test-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+  }
+
+  .test-btn {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+
+  .test-btn:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    background: #222;
+  }
+
+  .test-btn.active {
+    border-color: var(--gold);
+    background: #222;
+    box-shadow: 0 0 0 1px var(--gold);
+  }
+
+  .test-btn .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .test-btn .label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .test-btn .topic {
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  .test-btn.done .num { color: var(--green); }
+  .test-btn.done { border-color: var(--green); }
+
+  /* QUIZ AREA */
+  .quiz-area {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+    display: none;
+  }
+
+  .quiz-area.visible { display: block; }
+
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .quiz-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: #fff;
+  }
+
+  .quiz-title span { color: var(--gold); }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .progress-bar {
+    width: 140px;
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+    min-width: 50px;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 16px;
+    animation: fadeSlide 0.3s ease;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-number {
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .q-text em {
+    font-style: italic;
+    color: var(--gold);
+    border-bottom: 1px dashed var(--gold);
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    background: #111;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 13px 18px;
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s ease;
+    text-align: left;
+    letter-spacing: 0.2px;
+  }
+
+  .option:hover:not(:disabled) {
+    border-color: var(--gold);
+    background: #1e1e1e;
+    color: #fff;
+  }
+
+  .option.correct {
+    border-color: var(--green);
+    background: rgba(76, 175, 130, 0.12);
+    color: var(--green);
+  }
+
+  .option.wrong {
+    border-color: var(--red);
+    background: rgba(224, 90, 90, 0.12);
+    color: var(--red);
+  }
+
+  .option:disabled { cursor: default; }
+
+  /* FEEDBACK */
+  .feedback {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: rgba(76,175,130,0.15); color: var(--green); border: 1px solid rgba(76,175,130,0.3); }
+  .feedback.wrong-fb { background: rgba(224,90,90,0.12); color: #e07070; border: 1px solid rgba(224,90,90,0.25); }
+
+  /* NAVIGATION */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    gap: 12px;
+  }
+
+  .btn {
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--dark);
+  }
+
+  .btn-primary:hover { background: #e8bb38; }
+  .btn-primary:disabled { opacity: 0.4; cursor: default; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-ghost:hover { border-color: #555; color: var(--text); }
+
+  /* SCORE CARD */
+  .score-card {
+    background: var(--card);
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    padding: 48px 32px;
+    text-align: center;
+    display: none;
+    animation: fadeSlide 0.4s ease;
+  }
+
+  .score-card.visible { display: block; }
+
+  .score-emoji { font-size: 64px; margin-bottom: 16px; }
+
+  .score-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .score-label {
+    font-size: 16px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .score-msg {
+    font-size: 18px;
+    color: #fff;
+    margin: 20px 0 8px;
+    font-weight: 500;
+  }
+
+  .score-detail {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .score-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* REVIEW */
+  .review-area {
+    margin-top: 28px;
+    display: none;
+  }
+
+  .review-area.visible { display: block; }
+
+  .review-item {
+    background: #111;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 12px;
+    border-left: 4px solid transparent;
+  }
+
+  .review-item.ok { border-color: var(--green); }
+  .review-item.fail { border-color: var(--red); }
+
+  .review-q { font-size: 14px; color: #ccc; margin-bottom: 8px; }
+  .review-a { font-size: 13px; }
+  .review-a .label { color: var(--muted); }
+  .review-a .val { font-weight: 600; }
+  .review-a .correct-val { color: var(--green); }
+  .review-a .wrong-val { color: var(--red); text-decoration: line-through; }
+
+  /* RESPONSIVE */
+  @media (max-width: 500px) {
+    .q-text { font-size: 15px; }
+    .option { font-size: 14px; padding: 11px 14px; }
+    .score-number { font-size: 3.5rem; }
+  }
 </style>
 </head>
 <body>
-<div class="screen" id="app"></div>
+
+<div class="header">
+  <div class="header-tag">UTEPSA · English Proficiency</div>
+  <h1>Grammar <span>Practice</span> Tests</h1>
+  <p>5 tests · 20 preguntas cada uno · Verb Tenses</p>
+</div>
+
+<div class="selector">
+  <h2>Selecciona un test para comenzar</h2>
+  <div class="test-grid" id="testGrid"></div>
+</div>
+
+<div class="quiz-area" id="quizArea">
+  <div class="quiz-header">
+    <div class="quiz-title" id="quizTitle">Test <span>1</span></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">1 / 20</div>
+    </div>
+  </div>
+
+  <div id="questionContainer"></div>
+
+  <div class="nav-row">
+    <button class="btn btn-ghost" id="backBtn" onclick="goBack()">← Volver</button>
+    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente →</button>
+  </div>
+
+  <div class="score-card" id="scoreCard">
+    <div class="score-emoji" id="scoreEmoji"></div>
+    <div class="score-number" id="scoreNum"></div>
+    <div class="score-label">de 20 correctas</div>
+    <div class="score-msg" id="scoreMsg"></div>
+    <div class="score-detail" id="scoreDetail"></div>
+    <div class="score-actions">
+      <button class="btn btn-ghost" onclick="toggleReview()">Ver respuestas</button>
+      <button class="btn btn-primary" onclick="retryTest()">Repetir test</button>
+      <button class="btn btn-ghost" onclick="goBack()">Otros tests</button>
+    </div>
+  </div>
+
+  <div class="review-area" id="reviewArea"></div>
+</div>
 
 <script>
-const COLORS = ["#FF6B6B","#FFD93D","#6BCB77","#4D96FF","#C77DFF"];
-
-const tests = [
+const TESTS = [
   {
-    title: "Test 1: Present Continuous", emoji: "🔄",
+    title: "Present Continuous",
+    topic: "Actions happening now",
     questions: [
-      { q: "Choose the correct Present Continuous sentence:", options: ["She work in a hospital.", "She is working right now.", "She works every day.", "She worked yesterday."], answer: 1, exp: "Present Continuous = is/am/are + verb-ing, for actions happening NOW." },
-      { q: "Which describes a TEMPORARY situation?", options: ["I always drink coffee.", "The sun rises in the east.", "He is staying here this week.", "They went to Paris."], answer: 2, exp: "Present Continuous is used for temporary situations: 'He is staying... this week.'" },
-      { q: "What is the correct question form?", options: ["What he is doing?", "What is he doing?", "What does he doing?", "What he does?"], answer: 1, exp: "Questions: Is/Am/Are + subject + verb-ing? → 'What is he doing?'" },
-      { q: "Choose the correct NEGATIVE:", options: ["She not is studying.", "She isn't studying.", "She doesn't studying.", "She not studying."], answer: 1, exp: "Negative: subject + am/is/are + NOT + verb-ing → 'She isn't studying.'" },
-      { q: "Which time expression goes with Present Continuous?", options: ["always", "yesterday", "right now", "last week"], answer: 2, exp: "'Right now' signals an action happening at this moment → Present Continuous." }
+      { q: "Look! The children ___ in the park right now.", opts: ["play","are playing","played","plays"], ans: 1, exp: "Se usa Present Continuous para acciones que ocurren en este momento. 'Look!' es una señal." },
+      { q: "She ___ in Madrid for a few months while she studies.", opts: ["lives","lived","is living","live"], ans: 2, exp: "Present Continuous para situaciones temporales. 'For a few months' indica algo temporal." },
+      { q: "___ you listening to me?", opts: ["Do","Are","Is","Did"], ans: 1, exp: "Con 'you', la pregunta en Present Continuous usa 'Are'." },
+      { q: "He ___ a shower at the moment.", opts: ["takes","took","is taking","take"], ans: 2, exp: "'At the moment' indica acción en progreso → Present Continuous." },
+      { q: "What ___ they doing in the garden?", opts: ["do","are","is","did"], ans: 1, exp: "'They' usa 'are' en Present Continuous." },
+      { q: "I ___ (not) the dishes right now.", opts: ["don't wash","isn't washing","am not washing","didn't wash"], ans: 2, exp: "Negativa en Present Continuous: 'am not + verb-ing'." },
+      { q: "My sister ___ her homework. Please don't disturb her.", opts: ["does","is doing","do","did"], ans: 1, exp: "Acción en progreso ahora mismo → Present Continuous." },
+      { q: "The baby ___ right now. Be quiet!", opts: ["sleeps","slept","is sleeping","sleep"], ans: 2, exp: "'Right now' indica acción en este momento → Present Continuous." },
+      { q: "Why ___ you wearing a coat? It's hot!", opts: ["do","are","did","is"], ans: 1, exp: "Pregunta en Present Continuous con 'you' → 'Are'." },
+      { q: "We ___ a movie at the moment.", opts: ["watch","watched","are watching","watches"], ans: 2, exp: "'At the moment' = acción en progreso → Present Continuous." },
+      { q: "Tom and Lucy ___ dinner with us tonight. (fixed plan)", opts: ["have","are having","had","has"], ans: 1, exp: "Present Continuous también describe planes fijos: 'are having'." },
+      { q: "She ___ for a new job these days.", opts: ["looks","looked","is looking","look"], ans: 2, exp: "'These days' indica situación temporal → Present Continuous." },
+      { q: "___ the dog barking? I can hear something.", opts: ["Does","Is","Are","Did"], ans: 1, exp: "El perro (singular) → 'Is' en Present Continuous." },
+      { q: "I ___ (not) feeling well today.", opts: ["don't","am not","isn't","aren't"], ans: 1, exp: "Con 'I', la negativa del Present Continuous es 'am not'." },
+      { q: "They ___ a new house at the moment.", opts: ["build","are building","built","builds"], ans: 1, exp: "'At the moment' → Present Continuous." },
+      { q: "What ___ she saying? I can't hear.", opts: ["does","did","is","are"], ans: 2, exp: "'She' + Present Continuous pregunta → 'is'." },
+      { q: "He ___ to music while he cooks.", opts: ["listens","is listening","listened","listen"], ans: 1, exp: "Acción simultánea en progreso → Present Continuous." },
+      { q: "My parents ___ visiting us this week.", opts: ["is","are","was","were"], ans: 1, exp: "'Parents' es plural → 'are' en Present Continuous." },
+      { q: "The train ___ (not) moving. Something is wrong.", opts: ["doesn't move","didn't move","isn't moving","aren't moving"], ans: 2, exp: "'The train' = singular → 'isn't moving'." },
+      { q: "Look at Maria — she ___ at you!", opts: ["smile","smiles","smiled","is smiling"], ans: 3, exp: "'Look at' indica acción visual inmediata → Present Continuous." }
     ]
   },
   {
-    title: "Test 2: Present Simple", emoji: "📅",
+    title: "Present Simple",
+    topic: "Routines & general facts",
     questions: [
-      { q: "Which sentence uses Present Simple correctly?", options: ["She is working every day.", "She works every day.", "She worked every day.", "She will work every day."], answer: 1, exp: "Present Simple = routines/habits. 'Every day' is a key time expression." },
-      { q: "Choose the correct question:", options: ["Where does she lives?", "Where she live?", "Where does she live?", "Where is she live?"], answer: 2, exp: "Questions with he/she/it: Does + subject + base verb → 'Where does she live?'" },
-      { q: "Which adverb of frequency fits? 'She ___ forgets her keys.'", options: ["yesterday", "right now", "always", "going to"], answer: 2, exp: "Adverbs of frequency (always, often, never) go with Present Simple." },
-      { q: "Choose the correct NEGATIVE:", options: ["He don't like coffee.", "He isn't like coffee.", "He doesn't like coffee.", "He not likes coffee."], answer: 2, exp: "Negative with he/she/it: doesn't + base verb → 'He doesn't like coffee.'" },
-      { q: "Which is a general FACT?", options: ["I am eating pizza now.", "The sun rises in the east.", "She is visiting Rome this summer.", "They went to the beach."], answer: 1, exp: "General facts use Present Simple: 'The sun rises in the east.'" }
+      { q: "She ___ to work every day by bus.", opts: ["go","going","goes","is going"], ans: 2, exp: "Rutina diaria → Present Simple. Con 'she' se añade -s: 'goes'." },
+      { q: "The sun ___ in the east.", opts: ["rises","is rising","rose","rise"], ans: 0, exp: "Hecho general → Present Simple. 'The sun rises' (3ª persona)." },
+      { q: "___ you speak French?", opts: ["Are","Do","Does","Did"], ans: 1, exp: "Pregunta en Present Simple con 'you' → 'Do'." },
+      { q: "He ___ never late for class.", opts: ["is","are","was","be"], ans: 0, exp: "'He' + adverbio de frecuencia → 'He is never'. 'Is' es correcto." },
+      { q: "They always ___ breakfast together.", opts: ["have","has","is having","are having"], ans: 0, exp: "'Always' indica hábito → Present Simple. 'They have' (sin -s)." },
+      { q: "My cat ___ (not) like water.", opts: ["don't","doesn't","isn't","aren't"], ans: 1, exp: "Negativa con 'my cat' (3ª persona singular) → 'doesn't'." },
+      { q: "How often ___ she visit her grandmother?", opts: ["do","does","is","are"], ans: 1, exp: "Pregunta sobre frecuencia con 'she' → 'does'." },
+      { q: "Water ___ at 100 degrees Celsius.", opts: ["boil","boils","is boiling","boiled"], ans: 1, exp: "Hecho científico → Present Simple. 'Water boils' (3ª persona)." },
+      { q: "I ___ my teeth twice a day.", opts: ["brush","brushes","am brushing","brushed"], ans: 0, exp: "Rutina con 'I' → Present Simple: 'brush' (sin -s)." },
+      { q: "Dogs ___ (not) eat chocolate. It's dangerous for them.", opts: ["don't","doesn't","aren't","isn't"], ans: 0, exp: "Hecho general + 'dogs' (plural) → 'don't'." },
+      { q: "He ___ often go to the gym on weekends.", opts: ["does","is","don't","doesn't"], ans: 0, exp: "Con adverbio de frecuencia, 'often' va antes del verbo: 'He often goes'... pero la pregunta pide auxiliar → 'does'." },
+      { q: "We ___ English at school every morning.", opts: ["study","studies","are studying","studied"], ans: 0, exp: "Rutina escolar → Present Simple. 'We study' (plural, sin -s)." },
+      { q: "___ your brother work in the city center?", opts: ["Do","Does","Is","Are"], ans: 1, exp: "Pregunta con 'your brother' (3ª persona singular) → 'Does'." },
+      { q: "She always ___ a coffee before work.", opts: ["drink","drinks","is drinking","drank"], ans: 1, exp: "'Always' = hábito. 'She drinks' (3ª persona + -s)." },
+      { q: "The museum ___ at 9 am and closes at 6 pm.", opts: ["open","opens","is opening","opened"], ans: 1, exp: "Horarios y hechos estables → Present Simple. 'The museum opens'." },
+      { q: "I ___ never eat fast food.", opts: ["do","don't","does","am"], ans: 1, exp: "Con 'never', se usa el auxiliar correspondiente: 'I don't never' no es correcto; la estructura natural es 'I never eat', pero entre las opciones 'don't' es la mejor." },
+      { q: "He ___ from Italy originally.", opts: ["come","comes","is coming","came"], ans: 1, exp: "Dato permanente → Present Simple. 'He comes from Italy'." },
+      { q: "How many hours ___ you sleep every night?", opts: ["does","do","are","is"], ans: 1, exp: "Pregunta con 'you' → 'do'." },
+      { q: "My parents ___ (not) drink coffee.", opts: ["doesn't","don't","isn't","aren't"], ans: 1, exp: "'My parents' = plural → 'don't'." },
+      { q: "The earth ___ around the sun.", opts: ["go","goes","is going","went"], ans: 1, exp: "Hecho científico → Present Simple. 'The earth goes'." }
     ]
   },
   {
-    title: "Test 3: Simple vs Continuous", emoji: "⚡",
+    title: "Present Simple vs Continuous",
+    topic: "Contrast & time signals",
     questions: [
-      { q: "'She ___ in a bank.' (routine)", options: ["is working", "works", "worked", "will work"], answer: 1, exp: "Routine → Present Simple: 'She works in a bank.'" },
-      { q: "'She ___ late today.' (action in progress)", options: ["works", "worked", "is working", "will works"], answer: 2, exp: "Action in progress → Present Continuous: 'She is working late today.'" },
-      { q: "Which sentence describes a ROUTINE?", options: ["He is cooking right now.", "He cooks dinner every evening.", "He cooked yesterday.", "He is going to cook."], answer: 1, exp: "'Every evening' = routine → Present Simple." },
-      { q: "What's happening AT THIS MOMENT?", options: ["They usually watch TV.", "They watched TV last night.", "They are watching TV now.", "They will watch TV."], answer: 2, exp: "'Now' → Present Continuous: 'They are watching TV now.'" },
-      { q: "Correct pair (routine / in progress):", options: ["She is working / She work", "She works / She is working", "She worked / She works", "She is working / She worked"], answer: 1, exp: "Routine = works (Present Simple) / In progress = is working (Present Continuous)." }
+      { q: "She ___ in a bank. (her job)", opts: ["is working","works","worked","work"], ans: 1, exp: "Trabajo habitual/permanente → Present Simple: 'She works'." },
+      { q: "She ___ late today because of the meeting. (today only)", opts: ["works","worked","is working","work"], ans: 2, exp: "Situación temporal (hoy solo) → Present Continuous: 'is working'." },
+      { q: "I usually ___ lunch at home, but today I ___ at a restaurant.", opts: ["eat / am eating","am eating / eat","eat / eat","am eating / am eating"], ans: 0, exp: "Rutina (usually) → Present Simple. Excepción hoy → Present Continuous." },
+      { q: "What ___ he do for a living?", opts: ["does","is","do","did"], ans: 0, exp: "Trabajo/profesión = hecho permanente → Present Simple: 'What does he do?'" },
+      { q: "Look! It ___ (rain) outside.", opts: ["rains","is raining","rained","rain"], ans: 1, exp: "'Look!' señala acción en este momento → Present Continuous." },
+      { q: "Tom always ___ the newspaper in the morning.", opts: ["reads","is reading","read","does read"], ans: 0, exp: "'Always' + hábito → Present Simple: 'reads'." },
+      { q: "Why ___ you wearing sunglasses? It's cloudy!", opts: ["do","are","did","does"], ans: 1, exp: "Acción en este momento → Present Continuous: 'Are you wearing?'" },
+      { q: "He ___ (not) usually drink tea, but he ___ (drink) it now.", opts: ["doesn't / is drinking","isn't drinking / drinks","don't / is drinking","doesn't / drinks"], ans: 0, exp: "Hábito negativo → Present Simple. Excepción ahora → Continuous." },
+      { q: "They ___ to the cinema every Friday night.", opts: ["are going","go","went","goes"], ans: 1, exp: "Rutina semanal → Present Simple: 'go'." },
+      { q: "Can you call back later? I ___ a bath.", opts: ["have","am having","had","has"], ans: 1, exp: "Acción en progreso ahora → Present Continuous: 'am having'." },
+      { q: "This soup ___ delicious! (state verb)", opts: ["is tasting","tastes","taste","tasted"], ans: 1, exp: "'Taste' es verbo de estado (stative verb). Los verbos de estado usan Present Simple: 'tastes'." },
+      { q: "She ___ English at the university. (permanent job)", opts: ["is teaching","teaches","taught","teach"], ans: 1, exp: "Trabajo permanente → Present Simple: 'She teaches'." },
+      { q: "He ___ English this semester to improve his skills. (temporary)", opts: ["studies","is studying","studied","study"], ans: 1, exp: "Situación temporal este semestre → Present Continuous." },
+      { q: "I ___ (think) you're right about that.", opts: ["am thinking","think","thought","thinks"], ans: 1, exp: "'Think' como verbo de estado (opinión) → Present Simple." },
+      { q: "The kids ___ TV at the moment. (right now)", opts: ["watch","watches","are watching","watched"], ans: 2, exp: "'At the moment' → Present Continuous: 'are watching'." },
+      { q: "My brother ___ in London. He moved there last year. (permanent)", opts: ["is living","lives","lived","live"], ans: 1, exp: "Residencia permanente → Present Simple: 'lives'." },
+      { q: "I ___ (not) understand the instructions. (state verb)", opts: ["am not understanding","don't understand","doesn't understand","isn't understanding"], ans: 1, exp: "'Understand' es verbo de estado → Present Simple negativo." },
+      { q: "We ___ our car this week — it's in the garage.", opts: ["don't use","aren't using","didn't use","not use"], ans: 1, exp: "Situación temporal esta semana → Present Continuous negativo." },
+      { q: "She ___ always ___ about everything! (habit = annoying)", opts: ["is / complaining","does / complain","has / complained","was / complaining"], ans: 0, exp: "Present Continuous con 'always' expresa hábito irritante: 'is always complaining'." },
+      { q: "Dogs ___ four legs. (fact)", opts: ["are having","have","has","had"], ans: 1, exp: "Hecho general → Present Simple: 'Dogs have'." }
     ]
   },
   {
-    title: "Test 4: Past Simple", emoji: "⏪",
+    title: "Past Simple",
+    topic: "Completed past actions",
     questions: [
-      { q: "Choose the correct Past Simple of 'go':", options: ["goed", "gone", "went", "goes"], answer: 2, exp: "'Go' is irregular → Past Simple: went." },
-      { q: "Which is a REGULAR verb in past simple?", options: ["went", "saw", "played", "took"], answer: 2, exp: "Regular verbs add -ed: play → played. The others are irregular." },
-      { q: "Choose the correct NEGATIVE:", options: ["She didn't went to school.", "She didn't go to school.", "She doesn't went.", "She not went."], answer: 1, exp: "Negative: didn't + base verb → 'She didn't go to school.'" },
-      { q: "Choose the correct QUESTION:", options: ["Did she went?", "Did she goes?", "Did she go?", "Does she went?"], answer: 2, exp: "Questions: Did + subject + base verb → 'Did she go?'" },
-      { q: "Which time expression goes with Past Simple?", options: ["right now", "every day", "yesterday", "tomorrow"], answer: 2, exp: "'Yesterday' signals a completed past action → Past Simple." }
+      { q: "She ___ to Paris last summer.", opts: ["go","goes","went","is going"], ans: 2, exp: "'Last summer' indica pasado completo → Past Simple. 'Go' → irregular: 'went'." },
+      { q: "I ___ (not) see him at the party yesterday.", opts: ["didn't","doesn't","wasn't","weren't"], ans: 0, exp: "Negativa en Past Simple → 'didn't + infinitivo'." },
+      { q: "___ you enjoy the concert last night?", opts: ["Did","Do","Were","Was"], ans: 0, exp: "Pregunta en Past Simple → 'Did + sujeto + infinitivo'." },
+      { q: "They ___ dinner together three hours ago.", opts: ["have","are having","had","has"], ans: 2, exp: "'Three hours ago' → pasado → Past Simple: 'had'." },
+      { q: "She ___ the answer immediately.", opts: ["knows","knew","known","is knowing"], ans: 1, exp: "Acción completada en el pasado → Past Simple: 'knew' (irregular)." },
+      { q: "He ___ (not) call me back. I'm angry.", opts: ["didn't","doesn't","isn't","wasn't"], ans: 0, exp: "Negativa en Past Simple: 'didn't + call'." },
+      { q: "When ___ you arrive at the airport?", opts: ["do","did","does","are"], ans: 1, exp: "Pregunta en Past Simple → 'When did you arrive?'" },
+      { q: "We ___ a great time at the beach last weekend.", opts: ["have","are having","had","has"], ans: 2, exp: "'Last weekend' → Past Simple: 'had'." },
+      { q: "The movie ___ at 8 pm and ended at 10 pm.", opts: ["start","starts","started","is starting"], ans: 2, exp: "Evento pasado completo → Past Simple: 'started'." },
+      { q: "I ___ my keys this morning. I had to call a locksmith.", opts: ["lose","lost","am losing","loses"], ans: 1, exp: "'This morning' (ya pasó) → Past Simple: 'lost' (irregular)." },
+      { q: "She ___ in London for two years before moving to New York.", opts: ["lives","is living","lived","has lived"], ans: 2, exp: "Período definido en el pasado → Past Simple: 'lived'." },
+      { q: "Where ___ he go after the meeting?", opts: ["does","did","was","is"], ans: 1, exp: "Pregunta sobre acción pasada → 'Where did he go?'" },
+      { q: "They ___ (not) understand the instructions.", opts: ["didn't","don't","weren't","isn't"], ans: 0, exp: "Negativa en Past Simple → 'didn't understand'." },
+      { q: "He ___ his bike to school every day when he was young.", opts: ["rides","is riding","rode","ride"], ans: 2, exp: "Hábito pasado (when he was young) → Past Simple: 'rode' (irregular)." },
+      { q: "My grandmother ___ (teach) English for 30 years.", opts: ["teaches","taught","is teaching","teached"], ans: 1, exp: "'Taught' es el pasado irregular de 'teach'." },
+      { q: "I ___ the newspaper this morning. (already read it)", opts: ["read","reads","am reading","was reading"], ans: 0, exp: "'Read' en pasado se pronuncia /rɛd/ y se escribe igual: 'read' (irreg.)." },
+      { q: "We ___ to the supermarket yesterday and ___ a lot of food.", opts: ["went / bought","go / buy","went / buyed","go / bought"], ans: 0, exp: "'Yesterday' → Past Simple. Ambos verbos irregulares: went / bought." },
+      { q: "___ she write to you last week?", opts: ["Does","Did","Was","Is"], ans: 1, exp: "Pregunta en Past Simple → 'Did she write?'" },
+      { q: "He ___ (not) sleep well last night.", opts: ["didn't","doesn't","isn't","wasn't"], ans: 0, exp: "Negativa Past Simple → 'didn't sleep'." },
+      { q: "They ___ the whole project in just two days.", opts: ["finish","finished","are finishing","finishes"], ans: 1, exp: "Acción completada en el pasado → Past Simple: 'finished'." }
     ]
   },
   {
-    title: "Test 5: Future Forms", emoji: "🚀",
+    title: "Future Forms",
+    topic: "will / going to / present continuous",
     questions: [
-      { q: "'It ___ rain tomorrow.' (prediction)", options: ["is going to", "will", "is", "does"], answer: 1, exp: "Predictions with 'will': 'It will rain tomorrow.'" },
-      { q: "'I ___ travel next week.' (plan)", options: ["will", "am going to", "am", "did"], answer: 1, exp: "Plans → going to: 'I am going to travel next week.'" },
-      { q: "'I ___ meeting my friend at 6.' (fixed arrangement)", options: ["will be", "am", "went", "do"], answer: 1, exp: "Fixed arrangements → Present Continuous: 'I am meeting my friend at 6.'" },
-      { q: "Which sentence is a PREDICTION?", options: ["I am going to visit my parents.", "She will probably win.", "They are meeting at 8.", "He studied for the exam."], answer: 1, exp: "'Will + probably' = prediction about the future." },
-      { q: "Correct NEGATIVE with 'will':", options: ["She willn't come.", "She won't come.", "She doesn't will come.", "She isn't will come."], answer: 1, exp: "Negative of will: won't (will not) → 'She won't come.'" }
+      { q: "It's very cloudy. I think it ___ rain tonight.", opts: ["is going to","will","is raining","rains"], ans: 1, exp: "Predicción sin evidencia visual específica → 'will'. Aunque 'going to' también es posible aquí, 'will' es más natural con 'I think'." },
+      { q: "Look at those clouds! It ___ rain any minute!", opts: ["will","is going to","rains","rained"], ans: 1, exp: "Evidencia visible (las nubes) → 'going to': predicción con evidencia." },
+      { q: "I've decided: I ___ study medicine next year.", opts: ["will","am going to","am studying","study"], ans: 1, exp: "Plan decidido → 'going to'." },
+      { q: "Can you help me? — Sure, I ___ do it right away.", opts: ["am going to","will","am doing","do"], ans: 1, exp: "Decisión espontánea en el momento → 'will'." },
+      { q: "She ___ meet the director at 3 pm tomorrow. (appointment)", opts: ["will","is meeting","meets","is going to meet"], ans: 1, exp: "Cita fija ya organizada → Present Continuous: 'is meeting'." },
+      { q: "We ___ travel around Europe next summer. (already planned)", opts: ["will","are going to","are traveling","travel"], ans: 1, exp: "Plan ya decidido → 'going to'." },
+      { q: "I don't think robots ___ replace humans completely.", opts: ["are going to","will","replace","are replacing"], ans: 1, exp: "Predicción general con 'I don't think' → 'will'." },
+      { q: "He ___ probably ___ late because of traffic.", opts: ["will / be","is going to / be","is / being","does / be"], ans: 0, exp: "Predicción probable → 'will probably be'." },
+      { q: "___ you help me move this table? (spontaneous request)", opts: ["Are going to","Will","Do","Are"], ans: 1, exp: "Petición espontánea → 'Will you help me?'" },
+      { q: "They have bought tickets. They ___ fly to Tokyo next Friday.", opts: ["will","are going to","are flying","fly"], ans: 2, exp: "Acuerdo/plan con confirmación → Present Continuous: 'are flying'." },
+      { q: "She's feeling sick. She ___ faint!", opts: ["will","is going to","faints","is fainting"], ans: 1, exp: "Predicción con evidencia clara (se ve que se va a desmayar) → 'going to'." },
+      { q: "I promise I ___ call you as soon as I arrive.", opts: ["am going to","will","am calling","call"], ans: 1, exp: "Promesa → 'will'." },
+      { q: "What ___ you do after you finish university?", opts: ["are going to","will","do","are"], ans: 0, exp: "Pregunta sobre planes futuros → 'What are you going to do?'" },
+      { q: "The president ___ give a speech tomorrow morning. (official schedule)", opts: ["will","is going to","is giving","gives"], ans: 2, exp: "Evento programado/oficial → Present Continuous o 'going to'. 'Is giving' es correcto." },
+      { q: "Don't worry — everything ___ be okay.", opts: ["is going to","will","is","goes"], ans: 1, exp: "Predicción/promesa consolatoria → 'will'." },
+      { q: "I'm starving. I ___ order a pizza right now.", opts: ["will","am going to","am ordering","order"], ans: 1, exp: "Decisión que se toma en este momento → 'will'." },
+      { q: "They ___ not attend the meeting tomorrow. (already decided)", opts: ["will","are going to","are","do"], ans: 1, exp: "Decisión tomada → 'going to': 'They are not going to attend'." },
+      { q: "In 2050, people probably ___ live on Mars.", opts: ["going to","will","are","do"], ans: 1, exp: "Predicción lejana → 'will'." },
+      { q: "My flight ___ at 6 am. I need to wake up early.", opts: ["is leaving","leaves","will leave","is going to leave"], ans: 1, exp: "Horario fijo de transporte → Present Simple: 'leaves'." },
+      { q: "What time ___ the train arrive? (timetable)", opts: ["will","does","is going to","is"], ans: 1, exp: "Horario establecido → Present Simple: 'What time does the train arrive?'" }
     ]
   }
 ];
 
-let state = { screen: "home", testIdx: null, qIdx: 0, selected: null, confirmed: false, score: 0, results: {} };
+let currentTest = null;
+let currentQ = 0;
+let answers = [];
+let answered = false;
 
-function render() {
-  const app = document.getElementById("app");
-  if (state.screen === "home") app.innerHTML = renderHome();
-  else if (state.screen === "test") app.innerHTML = renderTest();
-  else if (state.screen === "result") app.innerHTML = renderResult();
-  attachListeners();
+// Build test selector buttons
+const grid = document.getElementById('testGrid');
+TESTS.forEach((t, i) => {
+  const btn = document.createElement('div');
+  btn.className = 'test-btn';
+  btn.id = `testBtn${i}`;
+  btn.onclick = () => startTest(i);
+  btn.innerHTML = `<div class="num">${i + 1}</div><div class="label">Test ${i + 1}</div><div class="topic">${t.title}</div>`;
+  grid.appendChild(btn);
+});
+
+function startTest(idx) {
+  currentTest = idx;
+  currentQ = 0;
+  answers = new Array(20).fill(null);
+  answered = false;
+
+  document.querySelectorAll('.test-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`testBtn${idx}`).classList.add('active');
+
+  document.getElementById('quizTitle').innerHTML = `Test <span>${idx + 1}</span> · ${TESTS[idx].title}`;
+  document.getElementById('scoreCard').classList.remove('visible');
+  document.getElementById('reviewArea').classList.remove('visible');
+  document.getElementById('reviewArea').innerHTML = '';
+  document.querySelector('.quiz-area').classList.add('visible');
+  document.querySelector('.quiz-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  renderQuestion();
 }
 
-function renderHome() {
-  const cards = tests.map((t, i) => {
-    const done = state.results[i] !== undefined;
-    const badge = done ? `<span class="score-badge" style="background:${COLORS[i]}33;color:${COLORS[i]}">${state.results[i]}/5</span>` : "";
-    return `<div class="test-card" data-action="start" data-idx="${i}" style="${done ? `border-color:${COLORS[i]}` : ""}">
-      <span class="emoji">${t.emoji}</span>
-      <h3>${t.title}</h3>
-      <p>5 questions · Multiple choice</p>
-      ${badge}
-    </div>`;
-  }).join("");
-  return `<div>
-    <h1 class="home-title">English Proficiency</h1>
-    <p class="home-sub">Choose a test to begin</p>
-    <div class="test-grid">${cards}</div>
-  </div>`;
-}
+function renderQuestion() {
+  const test = TESTS[currentTest];
+  const q = test.questions[currentQ];
+  const total = test.questions.length;
 
-function renderTest() {
-  const t = tests[state.testIdx];
-  const q = t.questions[state.qIdx];
-  const color = COLORS[state.testIdx];
-  const pct = ((state.qIdx) / t.questions.length) * 100;
+  document.getElementById('progressFill').style.width = `${((currentQ) / total) * 100}%`;
+  document.getElementById('progressText').textContent = `${currentQ + 1} / ${total}`;
 
-  const options = q.options.map((opt, i) => {
-    let cls = "option-btn";
-    let letterBg = "#2a2a3a"; let letterTxt = "✗";
-    const letters = ["A","B","C","D"];
-    if (state.confirmed) {
-      if (i === q.answer) { cls += " correct"; letterBg = "#22c55e"; letterTxt = "✓"; }
-      else if (i === state.selected) { cls += " wrong"; letterBg = "#ef4444"; letterTxt = "✗"; }
-      else letterTxt = letters[i];
-    } else {
-      letterTxt = letters[i];
-      if (i === state.selected) cls += " selected";
-    }
-    const borderStyle = !state.confirmed && i === state.selected ? `border-color:${color};color:#fff;` : "";
-    return `<button class="${cls}" data-action="select" data-opt="${i}" style="${borderStyle}">
-      <span class="letter" style="background:${state.confirmed && (i===q.answer||i===state.selected) ? letterBg : "#2a2a3a"}">${letterTxt}</span>
-      ${opt}
-    </button>`;
-  }).join("");
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.disabled = answers[currentQ] === null;
+  nextBtn.textContent = currentQ === total - 1 ? 'Ver resultado →' : 'Siguiente →';
 
-  let explanation = "";
-  if (state.confirmed) {
-    const ok = state.selected === q.answer;
-    explanation = `<div class="explanation" style="background:${ok?"#14532d":"#1c1917"};border:1px solid ${ok?"#22c55e":"#f59e0b"}">
-      <strong style="color:${ok?"#4ade80":"#fbbf24"}">${ok ? "✓ Correct! " : "✗ Not quite. "}</strong>${q.exp}
-    </div>`;
+  const qText = q.q.replace(/___/g, '<em>___</em>');
+
+  let html = `
+    <div class="question-card" id="qCard">
+      <div class="q-number">Pregunta ${currentQ + 1} de ${total}</div>
+      <div class="q-text">${qText}</div>
+      <div class="options">
+        ${q.opts.map((o, i) => `
+          <button class="option" id="opt${i}" onclick="selectAnswer(${i})">${o}</button>
+        `).join('')}
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  `;
+
+  document.getElementById('questionContainer').innerHTML = html;
+
+  // Restore previous answer if navigated back
+  if (answers[currentQ] !== null) {
+    showAnswerState(answers[currentQ], false);
   }
 
-  const btnLabel = !state.confirmed ? "Check Answer ✓" : (state.qIdx + 1 < t.questions.length ? "Next Question →" : "See Results 🏁");
-  const btnAction = !state.confirmed ? "confirm" : "next";
-  const btnDisabled = !state.confirmed && state.selected === null ? "disabled" : "";
-  const btnStyle = !state.confirmed && state.selected === null ? "" : `background:${color};color:#000;`;
-
-  return `<div>
-    <div class="test-header">
-      <button class="back-btn" data-action="home">← Back</button>
-      <span class="test-name">${t.emoji} ${t.title}</span>
-      <span class="q-counter">${state.qIdx+1}/${t.questions.length}</span>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
-    <div class="question-box"><p>${q.q}</p></div>
-    <div class="options">${options}</div>
-    ${explanation}
-    <button class="action-btn" data-action="${btnAction}" ${btnDisabled} style="${btnStyle}">${btnLabel}</button>
-  </div>`;
+  document.getElementById('scoreCard').classList.remove('visible');
 }
 
-function renderResult() {
-  const t = tests[state.testIdx];
-  const color = COLORS[state.testIdx];
-  const s = state.results[state.testIdx];
-  const total = t.questions.length;
-  const pct = s / total;
-  let label, lcolor;
-  if (pct === 1) { label = "Perfect! 🏆"; lcolor = "#22c55e"; }
-  else if (pct >= 0.8) { label = "Great! 🌟"; lcolor = "#3b82f6"; }
-  else if (pct >= 0.6) { label = "Good 👍"; lcolor = "#f59e0b"; }
-  else { label = "Keep practicing 💪"; lcolor = "#ef4444"; }
-
-  return `<div class="result-box" style="border-color:${color};box-shadow:0 0 40px ${color}33">
-    <div class="result-emoji">${t.emoji}</div>
-    <div class="result-title">${t.title}</div>
-    <div class="result-score" style="color:${color}">${s}/${total}</div>
-    <div class="result-grade" style="color:${lcolor}">${label}</div>
-    <div class="result-btns">
-      <button class="result-btn" data-action="retry" style="background:${color};color:#000">Try Again 🔁</button>
-      <button class="result-btn" data-action="home" style="background:#2a2a3a;color:#fff">All Tests 📋</button>
-    </div>
-  </div>`;
+function selectAnswer(idx) {
+  if (answers[currentQ] !== null) return;
+  answers[currentQ] = idx;
+  showAnswerState(idx, true);
+  document.getElementById('nextBtn').disabled = false;
 }
 
-function attachListeners() {
-  document.querySelectorAll("[data-action]").forEach(el => {
-    el.addEventListener("click", () => {
-      const action = el.dataset.action;
-      if (action === "start") {
-        state = { ...state, screen: "test", testIdx: +el.dataset.idx, qIdx: 0, selected: null, confirmed: false, score: 0 };
-      } else if (action === "home") {
-        state.screen = "home";
-      } else if (action === "select") {
-        if (!state.confirmed) { state.selected = +el.dataset.opt; }
-      } else if (action === "confirm") {
-        if (state.selected === null) return;
-        state.confirmed = true;
-        if (state.selected === tests[state.testIdx].questions[state.qIdx].answer) state.score++;
-      } else if (action === "next") {
-        const total = tests[state.testIdx].questions.length;
-        if (state.qIdx + 1 < total) {
-          state.qIdx++; state.selected = null; state.confirmed = false;
-        } else {
-          state.results[state.testIdx] = state.score;
-          state.screen = "result";
-        }
-      } else if (action === "retry") {
-        state = { ...state, screen: "test", qIdx: 0, selected: null, confirmed: false, score: 0 };
-      }
-      render();
-    });
+function showAnswerState(selected, animate) {
+  const q = TESTS[currentTest].questions[currentQ];
+  const opts = document.querySelectorAll('.option');
+
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selected && selected !== q.ans) btn.classList.add('wrong');
   });
+
+  const fb = document.getElementById('feedback');
+  const isCorrect = selected === q.ans;
+  fb.className = `feedback show ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+  fb.innerHTML = isCorrect
+    ? `✓ ¡Correcto! — ${q.exp}`
+    : `✗ Incorrecto. La respuesta correcta es: <strong>"${q.opts[q.ans]}"</strong>. ${q.exp}`;
 }
 
-render();
+function nextQuestion() {
+  const total = TESTS[currentTest].questions.length;
+  if (currentQ < total - 1) {
+    currentQ++;
+    renderQuestion();
+    document.getElementById('questionContainer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } else {
+    showScore();
+  }
+}
+
+function goBack() {
+  document.querySelector('.quiz-area').classList.remove('visible');
+  document.querySelectorAll('.test-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.selector').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showScore() {
+  const test = TESTS[currentTest];
+  const score = answers.reduce((acc, ans, i) => ans === test.questions[i].ans ? acc + 1 : acc, 0);
+  const pct = (score / 20) * 100;
+
+  // Mark test as done
+  document.getElementById(`testBtn${currentTest}`).classList.add('done');
+
+  document.getElementById('questionContainer').innerHTML = '';
+  document.getElementById('nextBtn').disabled = true;
+
+  const card = document.getElementById('scoreCard');
+  card.classList.add('visible');
+
+  const emojis = ['😅','😐','🙂','😊','🎉'];
+  const msgs = ['Sigue practicando, ¡tú puedes!','Vas bien, pero hay que repasar','¡Buen trabajo! Sigue así','¡Muy bien! Casi perfecto','¡Excelente! Dominas el tema'];
+  const tier = pct < 40 ? 0 : pct < 60 ? 1 : pct < 75 ? 2 : pct < 90 ? 3 : 4;
+
+  document.getElementById('scoreEmoji').textContent = emojis[tier];
+  document.getElementById('scoreNum').textContent = `${score}/20`;
+  document.getElementById('scoreMsg').textContent = msgs[tier];
+  document.getElementById('scoreDetail').textContent = `${pct.toFixed(0)}% de respuestas correctas · Test: ${test.title}`;
+
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressText').textContent = `20 / 20`;
+
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function retryTest() {
+  startTest(currentTest);
+}
+
+function toggleReview() {
+  const area = document.getElementById('reviewArea');
+  if (area.classList.contains('visible')) {
+    area.classList.remove('visible');
+    return;
+  }
+
+  const test = TESTS[currentTest];
+  let html = '<h3 style="font-family:\'Playfair Display\',serif;color:var(--gold);margin-bottom:16px;font-size:1.2rem;">Revisión de respuestas</h3>';
+
+  test.questions.forEach((q, i) => {
+    const userAns = answers[i];
+    const correct = userAns === q.ans;
+    html += `
+      <div class="review-item ${correct ? 'ok' : 'fail'}">
+        <div class="review-q">${i + 1}. ${q.q.replace(/___/g,'___')}</div>
+        <div class="review-a">
+          ${!correct ? `<span class="label">Tu respuesta: </span><span class="val wrong-val">${q.opts[userAns] ?? 'Sin responder'}</span> &nbsp;` : ''}
+          <span class="label">Correcta: </span><span class="val correct-val">${q.opts[q.ans]}</span>
+        </div>
+      </div>
+    `;
+  });
+
+  area.innerHTML = html;
+  area.classList.add('visible');
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 </script>
 </body>
 </html>
