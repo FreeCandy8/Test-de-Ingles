@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Proficiency Tests</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f13; font-family: Georgia, serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  
+  .screen { max-width: 620px; width: 100%; }
+  
+  /* HOME */
+  .home-title { color: #fff; font-size: 2rem; font-weight: 900; text-align: center; margin-bottom: 8px; }
+  .home-sub { color: #888; text-align: center; margin-bottom: 36px; font-size: 0.95rem; }
+  .test-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .test-card { background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 18px; padding: 24px 20px; cursor: pointer; text-align: left; transition: all 0.2s; }
+  .test-card:hover { transform: translateY(-3px); }
+  .test-card .emoji { font-size: 2rem; display: block; margin-bottom: 10px; }
+  .test-card h3 { color: #fff; font-size: 1rem; margin-bottom: 4px; }
+  .test-card p { color: #666; font-size: 0.82rem; }
+  .test-card .score-badge { display: inline-block; border-radius: 99px; padding: 2px 10px; font-size: 0.78rem; font-weight: 700; margin-top: 8px; }
+
+  /* TEST */
+  .test-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .back-btn { background: transparent; color: #888; border: 1px solid #333; border-radius: 8px; padding: 6px 14px; cursor: pointer; font-size: 0.88rem; }
+  .test-name { color: #fff; font-weight: 700; font-size: 0.95rem; }
+  .q-counter { color: #888; font-size: 0.88rem; }
+  .progress-bar { background: #222; border-radius: 99px; height: 5px; margin-bottom: 28px; }
+  .progress-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
+  .question-box { background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 18px; padding: 28px; margin-bottom: 16px; }
+  .question-box p { color: #fff; font-size: 1.05rem; line-height: 1.6; }
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .option-btn { background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 12px; padding: 14px 18px; color: #ccc; text-align: left; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s; font-family: Georgia, serif; }
+  .option-btn .letter { background: #2a2a3a; color: #fff; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 700; flex-shrink: 0; }
+  .option-btn.selected { border-width: 2px; color: #fff; }
+  .option-btn.correct { background: #14532d; border: 2px solid #22c55e; color: #fff; }
+  .option-btn.wrong { background: #450a0a; border: 2px solid #ef4444; color: #fff; }
+  .explanation { border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; font-size: 0.92rem; line-height: 1.6; color: #e5e7eb; }
+  .action-btn { width: 100%; border: none; border-radius: 12px; padding: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: Georgia, serif; transition: all 0.2s; }
+  .action-btn:disabled { background: #2a2a3a; color: #555; cursor: not-allowed; }
+
+  /* RESULT */
+  .result-box { background: #1a1a24; border-radius: 24px; padding: 44px 36px; text-align: center; border-width: 2px; border-style: solid; }
+  .result-emoji { font-size: 60px; margin-bottom: 12px; }
+  .result-title { color: #fff; font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; }
+  .result-score { font-size: 4rem; font-weight: 900; margin-bottom: 8px; }
+  .result-grade { font-size: 1.3rem; font-weight: 700; margin-bottom: 32px; }
+  .result-btns { display: flex; gap: 12px; justify-content: center; }
+  .result-btn { border: none; border-radius: 12px; padding: 12px 24px; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: Georgia, serif; }
+</style>
+</head>
+<body>
+<div class="screen" id="app"></div>
+
+<script>
+const COLORS = ["#FF6B6B","#FFD93D","#6BCB77","#4D96FF","#C77DFF"];
+
+const tests = [
+  {
+    title: "Test 1: Present Continuous", emoji: "🔄",
+    questions: [
+      { q: "Choose the correct Present Continuous sentence:", options: ["She work in a hospital.", "She is working right now.", "She works every day.", "She worked yesterday."], answer: 1, exp: "Present Continuous = is/am/are + verb-ing, for actions happening NOW." },
+      { q: "Which describes a TEMPORARY situation?", options: ["I always drink coffee.", "The sun rises in the east.", "He is staying here this week.", "They went to Paris."], answer: 2, exp: "Present Continuous is used for temporary situations: 'He is staying... this week.'" },
+      { q: "What is the correct question form?", options: ["What he is doing?", "What is he doing?", "What does he doing?", "What he does?"], answer: 1, exp: "Questions: Is/Am/Are + subject + verb-ing? → 'What is he doing?'" },
+      { q: "Choose the correct NEGATIVE:", options: ["She not is studying.", "She isn't studying.", "She doesn't studying.", "She not studying."], answer: 1, exp: "Negative: subject + am/is/are + NOT + verb-ing → 'She isn't studying.'" },
+      { q: "Which time expression goes with Present Continuous?", options: ["always", "yesterday", "right now", "last week"], answer: 2, exp: "'Right now' signals an action happening at this moment → Present Continuous." }
+    ]
+  },
+  {
+    title: "Test 2: Present Simple", emoji: "📅",
+    questions: [
+      { q: "Which sentence uses Present Simple correctly?", options: ["She is working every day.", "She works every day.", "She worked every day.", "She will work every day."], answer: 1, exp: "Present Simple = routines/habits. 'Every day' is a key time expression." },
+      { q: "Choose the correct question:", options: ["Where does she lives?", "Where she live?", "Where does she live?", "Where is she live?"], answer: 2, exp: "Questions with he/she/it: Does + subject + base verb → 'Where does she live?'" },
+      { q: "Which adverb of frequency fits? 'She ___ forgets her keys.'", options: ["yesterday", "right now", "always", "going to"], answer: 2, exp: "Adverbs of frequency (always, often, never) go with Present Simple." },
+      { q: "Choose the correct NEGATIVE:", options: ["He don't like coffee.", "He isn't like coffee.", "He doesn't like coffee.", "He not likes coffee."], answer: 2, exp: "Negative with he/she/it: doesn't + base verb → 'He doesn't like coffee.'" },
+      { q: "Which is a general FACT?", options: ["I am eating pizza now.", "The sun rises in the east.", "She is visiting Rome this summer.", "They went to the beach."], answer: 1, exp: "General facts use Present Simple: 'The sun rises in the east.'" }
+    ]
+  },
+  {
+    title: "Test 3: Simple vs Continuous", emoji: "⚡",
+    questions: [
+      { q: "'She ___ in a bank.' (routine)", options: ["is working", "works", "worked", "will work"], answer: 1, exp: "Routine → Present Simple: 'She works in a bank.'" },
+      { q: "'She ___ late today.' (action in progress)", options: ["works", "worked", "is working", "will works"], answer: 2, exp: "Action in progress → Present Continuous: 'She is working late today.'" },
+      { q: "Which sentence describes a ROUTINE?", options: ["He is cooking right now.", "He cooks dinner every evening.", "He cooked yesterday.", "He is going to cook."], answer: 1, exp: "'Every evening' = routine → Present Simple." },
+      { q: "What's happening AT THIS MOMENT?", options: ["They usually watch TV.", "They watched TV last night.", "They are watching TV now.", "They will watch TV."], answer: 2, exp: "'Now' → Present Continuous: 'They are watching TV now.'" },
+      { q: "Correct pair (routine / in progress):", options: ["She is working / She work", "She works / She is working", "She worked / She works", "She is working / She worked"], answer: 1, exp: "Routine = works (Present Simple) / In progress = is working (Present Continuous)." }
+    ]
+  },
+  {
+    title: "Test 4: Past Simple", emoji: "⏪",
+    questions: [
+      { q: "Choose the correct Past Simple of 'go':", options: ["goed", "gone", "went", "goes"], answer: 2, exp: "'Go' is irregular → Past Simple: went." },
+      { q: "Which is a REGULAR verb in past simple?", options: ["went", "saw", "played", "took"], answer: 2, exp: "Regular verbs add -ed: play → played. The others are irregular." },
+      { q: "Choose the correct NEGATIVE:", options: ["She didn't went to school.", "She didn't go to school.", "She doesn't went.", "She not went."], answer: 1, exp: "Negative: didn't + base verb → 'She didn't go to school.'" },
+      { q: "Choose the correct QUESTION:", options: ["Did she went?", "Did she goes?", "Did she go?", "Does she went?"], answer: 2, exp: "Questions: Did + subject + base verb → 'Did she go?'" },
+      { q: "Which time expression goes with Past Simple?", options: ["right now", "every day", "yesterday", "tomorrow"], answer: 2, exp: "'Yesterday' signals a completed past action → Past Simple." }
+    ]
+  },
+  {
+    title: "Test 5: Future Forms", emoji: "🚀",
+    questions: [
+      { q: "'It ___ rain tomorrow.' (prediction)", options: ["is going to", "will", "is", "does"], answer: 1, exp: "Predictions with 'will': 'It will rain tomorrow.'" },
+      { q: "'I ___ travel next week.' (plan)", options: ["will", "am going to", "am", "did"], answer: 1, exp: "Plans → going to: 'I am going to travel next week.'" },
+      { q: "'I ___ meeting my friend at 6.' (fixed arrangement)", options: ["will be", "am", "went", "do"], answer: 1, exp: "Fixed arrangements → Present Continuous: 'I am meeting my friend at 6.'" },
+      { q: "Which sentence is a PREDICTION?", options: ["I am going to visit my parents.", "She will probably win.", "They are meeting at 8.", "He studied for the exam."], answer: 1, exp: "'Will + probably' = prediction about the future." },
+      { q: "Correct NEGATIVE with 'will':", options: ["She willn't come.", "She won't come.", "She doesn't will come.", "She isn't will come."], answer: 1, exp: "Negative of will: won't (will not) → 'She won't come.'" }
+    ]
+  }
+];
+
+let state = { screen: "home", testIdx: null, qIdx: 0, selected: null, confirmed: false, score: 0, results: {} };
+
+function render() {
+  const app = document.getElementById("app");
+  if (state.screen === "home") app.innerHTML = renderHome();
+  else if (state.screen === "test") app.innerHTML = renderTest();
+  else if (state.screen === "result") app.innerHTML = renderResult();
+  attachListeners();
+}
+
+function renderHome() {
+  const cards = tests.map((t, i) => {
+    const done = state.results[i] !== undefined;
+    const badge = done ? `<span class="score-badge" style="background:${COLORS[i]}33;color:${COLORS[i]}">${state.results[i]}/5</span>` : "";
+    return `<div class="test-card" data-action="start" data-idx="${i}" style="${done ? `border-color:${COLORS[i]}` : ""}">
+      <span class="emoji">${t.emoji}</span>
+      <h3>${t.title}</h3>
+      <p>5 questions · Multiple choice</p>
+      ${badge}
+    </div>`;
+  }).join("");
+  return `<div>
+    <h1 class="home-title">English Proficiency</h1>
+    <p class="home-sub">Choose a test to begin</p>
+    <div class="test-grid">${cards}</div>
+  </div>`;
+}
+
+function renderTest() {
+  const t = tests[state.testIdx];
+  const q = t.questions[state.qIdx];
+  const color = COLORS[state.testIdx];
+  const pct = ((state.qIdx) / t.questions.length) * 100;
+
+  const options = q.options.map((opt, i) => {
+    let cls = "option-btn";
+    let letterBg = "#2a2a3a"; let letterTxt = "✗";
+    const letters = ["A","B","C","D"];
+    if (state.confirmed) {
+      if (i === q.answer) { cls += " correct"; letterBg = "#22c55e"; letterTxt = "✓"; }
+      else if (i === state.selected) { cls += " wrong"; letterBg = "#ef4444"; letterTxt = "✗"; }
+      else letterTxt = letters[i];
+    } else {
+      letterTxt = letters[i];
+      if (i === state.selected) cls += " selected";
+    }
+    const borderStyle = !state.confirmed && i === state.selected ? `border-color:${color};color:#fff;` : "";
+    return `<button class="${cls}" data-action="select" data-opt="${i}" style="${borderStyle}">
+      <span class="letter" style="background:${state.confirmed && (i===q.answer||i===state.selected) ? letterBg : "#2a2a3a"}">${letterTxt}</span>
+      ${opt}
+    </button>`;
+  }).join("");
+
+  let explanation = "";
+  if (state.confirmed) {
+    const ok = state.selected === q.answer;
+    explanation = `<div class="explanation" style="background:${ok?"#14532d":"#1c1917"};border:1px solid ${ok?"#22c55e":"#f59e0b"}">
+      <strong style="color:${ok?"#4ade80":"#fbbf24"}">${ok ? "✓ Correct! " : "✗ Not quite. "}</strong>${q.exp}
+    </div>`;
+  }
+
+  const btnLabel = !state.confirmed ? "Check Answer ✓" : (state.qIdx + 1 < t.questions.length ? "Next Question →" : "See Results 🏁");
+  const btnAction = !state.confirmed ? "confirm" : "next";
+  const btnDisabled = !state.confirmed && state.selected === null ? "disabled" : "";
+  const btnStyle = !state.confirmed && state.selected === null ? "" : `background:${color};color:#000;`;
+
+  return `<div>
+    <div class="test-header">
+      <button class="back-btn" data-action="home">← Back</button>
+      <span class="test-name">${t.emoji} ${t.title}</span>
+      <span class="q-counter">${state.qIdx+1}/${t.questions.length}</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
+    <div class="question-box"><p>${q.q}</p></div>
+    <div class="options">${options}</div>
+    ${explanation}
+    <button class="action-btn" data-action="${btnAction}" ${btnDisabled} style="${btnStyle}">${btnLabel}</button>
+  </div>`;
+}
+
+function renderResult() {
+  const t = tests[state.testIdx];
+  const color = COLORS[state.testIdx];
+  const s = state.results[state.testIdx];
+  const total = t.questions.length;
+  const pct = s / total;
+  let label, lcolor;
+  if (pct === 1) { label = "Perfect! 🏆"; lcolor = "#22c55e"; }
+  else if (pct >= 0.8) { label = "Great! 🌟"; lcolor = "#3b82f6"; }
+  else if (pct >= 0.6) { label = "Good 👍"; lcolor = "#f59e0b"; }
+  else { label = "Keep practicing 💪"; lcolor = "#ef4444"; }
+
+  return `<div class="result-box" style="border-color:${color};box-shadow:0 0 40px ${color}33">
+    <div class="result-emoji">${t.emoji}</div>
+    <div class="result-title">${t.title}</div>
+    <div class="result-score" style="color:${color}">${s}/${total}</div>
+    <div class="result-grade" style="color:${lcolor}">${label}</div>
+    <div class="result-btns">
+      <button class="result-btn" data-action="retry" style="background:${color};color:#000">Try Again 🔁</button>
+      <button class="result-btn" data-action="home" style="background:#2a2a3a;color:#fff">All Tests 📋</button>
+    </div>
+  </div>`;
+}
+
+function attachListeners() {
+  document.querySelectorAll("[data-action]").forEach(el => {
+    el.addEventListener("click", () => {
+      const action = el.dataset.action;
+      if (action === "start") {
+        state = { ...state, screen: "test", testIdx: +el.dataset.idx, qIdx: 0, selected: null, confirmed: false, score: 0 };
+      } else if (action === "home") {
+        state.screen = "home";
+      } else if (action === "select") {
+        if (!state.confirmed) { state.selected = +el.dataset.opt; }
+      } else if (action === "confirm") {
+        if (state.selected === null) return;
+        state.confirmed = true;
+        if (state.selected === tests[state.testIdx].questions[state.qIdx].answer) state.score++;
+      } else if (action === "next") {
+        const total = tests[state.testIdx].questions.length;
+        if (state.qIdx + 1 < total) {
+          state.qIdx++; state.selected = null; state.confirmed = false;
+        } else {
+          state.results[state.testIdx] = state.score;
+          state.screen = "result";
+        }
+      } else if (action === "retry") {
+        state = { ...state, screen: "test", qIdx: 0, selected: null, confirmed: false, score: 0 };
+      }
+      render();
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
